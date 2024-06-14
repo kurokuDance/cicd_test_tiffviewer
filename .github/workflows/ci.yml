@@ -1,46 +1,42 @@
-name: CI
+name: Build and Test
 
-on: [push, pull_request]
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
 
 jobs:
   build:
+
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout repository
+    - name: Checkout code
       uses: actions/checkout@v2
 
-    - name: Install Qt
-      uses: jurplel/install-qt-action@v3
+    - name: Set up Qt
+      uses: jurplel/install-qt-action@v2
       with:
-        version: '5'
-        host: 'linux'
-        target: 'desktop'
-        arch: 'gcc_64'
-        modules: 'qtcharts,qtwebengine'
-        cache: 'false'
-        cache-key-prefix: 'install-qt-action'
-        setup-python: 'true'
-        tools: 'tools_ifw,tools_qtcreator'
-        set-env: 'true'
-        tools-only: 'false'
-        aqtversion: '==3.1.*'
-        py7zrversion: '==0.20.*'
-        extra: '--external 7z'
+        version: 6.2.0
+        host: ubuntu
+        target: desktop
 
     - name: Install dependencies
       run: |
         sudo apt-get update
-        sudo apt-get install -y cmake build-essential libtiff-dev libgeotiff-dev
+        sudo apt-get install -y libtiff-dev libgeotiff-dev cmake
+
+    - name: Create build directory
+      run: mkdir -p build
 
     - name: Configure CMake
-      run: |
-        mkdir build
-        cd build
-        cmake ..
+      run: cmake -S . -B build -DCMAKE_PREFIX_PATH=$HOME/Qt/6.2.0/gcc_64
 
-    - name: Build project
-      run: |
-        cd build
-        make
+    - name: Build
+      run: cmake --build build
 
+    - name: Test
+      run: ctest --output-on-failure -C build
