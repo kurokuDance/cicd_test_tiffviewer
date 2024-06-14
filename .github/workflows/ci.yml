@@ -1,6 +1,12 @@
-name: CI
+name: Build and Test
 
-on: [push, pull_request]
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
 
 jobs:
   build:
@@ -30,8 +36,7 @@ jobs:
       run: cmake -S . -B build -DCMAKE_PREFIX_PATH=$HOME/Qt/6.2.0/gcc_64
 
     - name: Build
-<<<<<<< HEAD
       run: cmake --build build
-=======
-      run: cmake --build build
->>>>>>> 476bac604709b4d3f002b622d6df09bd9b513683
+
+    - name: Test
+      run: ctest --output-on-failure -C build
