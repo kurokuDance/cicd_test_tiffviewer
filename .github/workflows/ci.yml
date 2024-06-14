@@ -17,8 +17,16 @@ jobs:
         host: 'linux'
         target: 'desktop'
         arch: 'gcc_64'
-        modules: 'qtbase,qttools'
-        cache: 'true'
+        modules: 'qtcharts,qtwebengine'
+        cache: 'false'
+        cache-key-prefix: 'install-qt-action'
+        setup-python: 'true'
+        tools: 'tools_ifw,tools_qtcreator'
+        set-env: 'true'
+        tools-only: 'false'
+        aqtversion: '==3.1.*'
+        py7zrversion: '==0.20.*'
+        extra: '--external 7z'
 
     - name: Install dependencies
       run: |
