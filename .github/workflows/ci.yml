@@ -10,22 +10,39 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v2
 
-    - name: Set up Qt
-      uses: jurplel/install-qt-action@v2
-      with:
-        version: 5.15.2
-        host: linux
-        target: desktop
-        tools: qtbase, qttools
-
     - name: Install dependencies
       run: |
         sudo apt-get update
         sudo apt-get install -y cmake build-essential libtiff-dev libgeotiff-dev
 
-    - name: Build project
+    - name: Download Qt
+      run: |
+        sudo apt-get install -y wget
+        wget https://download.qt.io/official_releases/qt/5.15/5.15.2/qt-opensource-linux-x64-5.15.2.run
+        chmod +x qt-opensource-linux-x64-5.15.2.run
+
+    - name: Install Qt
+      run: |
+        mkdir -p $HOME/Qt
+        ./qt-opensource-linux-x64-5.15.2.run --script qt-installer-noninteractive.qs
+
+    - name: Set Qt environment variables
+      run: |
+        echo 'export PATH=$HOME/Qt/5.15.2/gcc_64/bin:$PATH' >> $GITHUB_ENV
+        echo 'export QTDIR=$HOME/Qt/5.15.2/gcc_64' >> $GITHUB_ENV
+
+    - name: Configure CMake
       run: |
         mkdir build
         cd build
         cmake ..
+
+    - name: Build project
+      run: |
+        cd build
         make
+
+    - name: Run tests
+      run: |
+        cd build
+        ctest --output-on-failure
