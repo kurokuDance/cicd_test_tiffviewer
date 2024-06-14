@@ -17,7 +17,7 @@ find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Widgets)
 
 
 find_package(TIFF REQUIRED)
-find_package(GeoTIFF REQUIRED)
+# find_package(GeoTIFF REQUIRED)
 
 # Укажите пути вручную, если find_package(GeoTIFF REQUIRED) не работает
 find_path(GEOTIFF_INCLUDE_DIR geotiff.h

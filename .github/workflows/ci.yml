@@ -4,41 +4,30 @@ on: [push, pull_request]
 
 jobs:
   build:
+
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout repository
+    - name: Checkout code
       uses: actions/checkout@v2
 
-      - name: Install Qt
-        uses: jurplel/install-qt-action@v3
-        with:
-          version: '5.15.2'
-          host: 'windows'
-          target: 'desktop'
-          arch: 'win64_msvc2019_64'
-          dir: '${{ github.workspace }}/example/'
-          install-deps: 'true'
-          modules: 'qtcharts qtwebengine'
-          archives: 'qtbase qtsvg'
-          cache: 'false'
-          cache-key-prefix: 'install-qt-action'
-          setup-python: 'true'
-          tools: 'tools_ifw tools_qtcreator,qt.tools.qtcreator'
-          set-env: 'true'
-          tools-only: 'false'
-          aqtversion: '==3.1.*'
-          py7zrversion: '==0.20.*'
-          extra: '--external 7z'
+    - name: Set up Qt
+      uses: jurplel/install-qt-action@v2
+      with:
+        version: 6.2.0
+        host: linux
+        target: desktop
 
     - name: Install dependencies
       run: |
         sudo apt-get update
-        sudo apt-get install -y cmake build-essential libtiff-dev libgeotiff-dev
+        sudo apt-get install -y libtiff-dev libgeotiff-dev cmake
 
-    - name: Build project
-      run: |
-        mkdir build
-        cd build
-        cmake ..
-        make
+    - name: Create build directory
+      run: mkdir -p build
+
+    - name: Configure CMake
+      run: cmake -S . -B build -DCMAKE_PREFIX_PATH=$HOME/Qt/6.2.0/gcc_64
+
+    - name: Build
+      run: cmake --build build
