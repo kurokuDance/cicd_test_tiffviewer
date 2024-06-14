@@ -15,7 +15,7 @@ jobs:
       uses: jurplel/install-qt-action@v2
       with:
         version: 6.2.0
-        host: ubuntu
+        host: linux
         target: desktop
 
     - name: Install dependencies
