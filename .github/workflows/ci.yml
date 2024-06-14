@@ -14,7 +14,7 @@ jobs:
     - name: Set up Qt
       uses: jurplel/install-qt-action@v2
       with:
-        version: 5.0
+        version: 6.2.0
         host: linux
         target: desktop
 
@@ -27,5 +27,5 @@ jobs:
       run: mkdir -p build
 
     - name: Configure CMake
-      run: cmake -S . -B build -DCMAKE_PREFIX_PATH=$HOME/Qt/5.0.0/gcc_64
+      run: cmake -S . -B build -DCMAKE_PREFIX_PATH=$HOME/Qt/6.2.0/gcc_64
 
