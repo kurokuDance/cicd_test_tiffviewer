@@ -1,0 +1,31 @@
+name: CI
+
+on: [push, pull_request]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+
+    - name: Set up Qt
+      uses: jurplel/install-qt-action@v2
+      with:
+        version: 5.15.2
+        host: linux
+        target: desktop
+        tools: qtbase, qttools
+
+    - name: Install dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y cmake build-essential libtiff-dev libgeotiff-dev
+
+    - name: Build project
+      run: |
+        mkdir build
+        cd build
+        cmake ..
+        make
